@@ -1,9 +1,0 @@
-syntax = "proto3";
-package pb;
-
-option go_package="./";
-
-message TestMsg{
-	string id = 1;
-	int32 age = 2;
-};

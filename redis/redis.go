@@ -1,8 +1,9 @@
 package redis
 
 import (
-	"golib/config"
 	"sync"
+
+	"e.coding.net/itdesk/weixin/golib/config"
 
 	"github.com/go-redis/redis"
 )

@@ -2,10 +2,12 @@ package mysql
 
 import (
 	"fmt"
-	"golib/config"
 	"sync"
 	"time"
 
+	"e.coding.net/itdesk/weixin/golib/config"
+
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 

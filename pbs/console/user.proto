@@ -1,0 +1,146 @@
+// protoc --go_out=../   user.proto
+// protoc --go-grpc_out=../   user.proto
+
+syntax = "proto3";
+package console;
+option go_package = "./console";
+
+// 服务列表
+service UserService {
+	rpc UserDetailRpc(UserDetailReq) returns(User) {};
+  rpc UserListRpc(UserListReq) returns(UserListRsp) {};
+	rpc DepDetailRpc(DepDetailReq) returns(Dep) {};
+	rpc PosDetailRpc(PosDetailReq) returns(Pos) {};
+	rpc CompanyDetailRpc(CompanyDetailReq) returns(Company) {};
+}
+
+// 用户基本信息
+enum UserState {
+	USER_ENABLE = 0;		// 正常
+	USER_AUDITING = 1;	// 审核中
+	USER_Disable = 2; 	// 停用
+};
+
+message CompanyInfo {
+	uint32 id =1;
+	string name = 2;
+};
+
+message DepInfo {
+	uint32 id = 1;
+	string name = 2;
+};
+
+message PosInfo {
+	uint32 id = 1;
+	string name = 2;
+}
+
+message User{
+  uint32  id = 1;
+	string openid  = 2;
+	string username= 3;
+	string id_card  = 4;
+	string mobile  = 5;
+	string photo   = 6;
+	string work_place    = 7; // 工位
+	string computer_info = 8;
+	string ext_num  = 9;
+	uint32 engineer = 10;
+	CompanyInfo company = 11; // 公司
+	PosInfo pos = 12;	// 职位
+	DepInfo dep = 13; // 部门
+	string menu_id = 14;
+	string CreateDate = 15;
+	string UpdateDate = 16;
+	string ip = 17;
+	string email = 18;
+	UserState state = 19;
+}
+
+// 用户信息查询
+message UserDetailReq{
+	uint32 id = 1;
+}
+
+// 用户列表查询
+message UserListReq {
+	uint32 page = 1;
+	uint32 limit = 2;
+	string sort = 3;
+	string keyword = 4;
+};
+
+message UserListRsp {
+	repeated User items = 1;
+	uint32 total = 2;
+};
+
+// 用户部门信息
+enum DepState {
+	DEP_ENABLE = 0; 	// 正常
+	DEP_DISABLE = 1;	// 停用
+};
+
+message Dep{
+	uint32 id         = 1;
+	string name       = 2;
+	string manager_id  = 3;
+	uint32 father_id   = 4;
+	uint32 company_id  = 5;
+	string CreateDate = 6;
+	string UpdateDate = 7;
+	uint32 OrderNo    = 8;
+	DepState state    = 9;
+}
+
+message DepDetailReq {
+	uint32 id = 1;
+}
+
+// 职位信息查询
+enum PosState {
+	POS_ENABLE = 0; 	// 正常
+	POS_DISABLE = 1;	// 停用
+};
+
+message Pos {
+	uint32 id         = 1;
+	string name       = 2;
+	string CreateDate = 3;
+	string UpdateDate = 4;
+	PosState state = 5;
+};
+
+message PosDetailReq {
+	uint32 id = 1;
+};
+
+// 公司信息查询
+enum CompanyState{
+	COMPANY_ENABLE = 0;	//正常
+	COMPANY_DISABLE = 1;//停用
+}
+
+enum CompanyType {
+	HEADQUARTERS = 0;	// 总公司
+	SUBSIDIARY = 1;	// 子公司
+}
+
+message Company {
+	uint32 id = 1;
+	uint32 group_id = 2;
+	CompanyType type=3;
+	string name = 4;
+	string fullname = 5;
+	uint32 manager_id = 6;
+	string CreateDate = 7;
+	string UpdateDate = 8;
+	uint32 OrderNo = 9;
+	CompanyState state = 10;
+}
+
+message CompanyDetailReq {
+	uint32 id = 1;
+}
+

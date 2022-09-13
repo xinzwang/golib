@@ -1,0 +1,33 @@
+// protoc --go_out=../ weixin.proto
+// protoc --go-grpc_out=../   weixin.proto
+
+syntax = "proto3";
+package weixin;
+option go_package = "./weixin";
+
+// 服务列表
+service WeixinService {
+	rpc TicketRpc(TicketReq) returns(TicketRsp) {};
+}
+
+// 获取接口票据	access_token jsapi_ticket
+enum TicketType {
+	none = 0;	//未知
+	access_token = 1;
+	jsapi_ticket = 2;
+}
+message TicketReq {
+	TicketType ticket_type = 1;
+}
+message TicketRsp {
+	string ticket = 1;
+	int64 expires_in = 2;
+}
+
+// 工单转交
+message TaskPassReq {
+	uint32 task_id = 1;
+	uint32 engineer_id = 2;
+	string reason = 3;
+}
+

@@ -2,35 +2,6 @@
 
 package model
 
-type Task struct {
-	Id         int    `gorm:"column:id"`
-	TypeId     int    `gorm:"column:type_id"`
-	UserId     int    `gorm:"column:user_id"`
-	Text       string `gorm:"column:text"`
-	Urgent     int    `gorm:"column:urgent"`
-	QrCode     string `gorm:"column:qr_code"`
-	Pic1       string `gorm:"column:pic1"`
-	Pic2       string `gorm:"column:pic2"`
-	Pic3       string `gorm:"column:pic3"`
-	Pic4       string `gorm:"column:pic4"`
-	Pic5       string `gorm:"column:pic5"`
-	Voice      string `gorm:"column:voice"`
-	CreateDate string `gorm:"column:CreateDate"`
-}
-
-type TaskLog struct {
-	Id          int     `gorm:"column:id"`
-	TaskId      int     `gorm:"column:task_id"`
-	EngineerId  int     `gorm:"column:engineer_id"`
-	State       int     `gorm:"column:state"`
-	Mode        int     `gorm:"column:mode"`
-	CreateDate  *string `gorm:"column:CreateDate"`
-	StartDate   *string `gorm:"column:StartDate"`
-	FinishDate  *string `gorm:"column:FinishDate"`
-	Out         int     `gorm:"column:out"`
-	ProcessTime int     `gorm:"column:process_time"`
-}
-
 type TaskSolution struct {
 	Id          int    `gorm:"column:id"`
 	TaskId      int    `gorm:"column:task_id"`
@@ -102,18 +73,18 @@ type Resource struct {
 	State      int    `gorm:"column:state"`
 }
 
-type Company struct {
-	Id         int    `gorm:"column:id"`
-	Group      string `gorm:"column:group"`
-	Tyue       int    `gorm:"column:type"`
-	Name       string `gorm:"column:name"`
-	FullName   string `gorm:"column:fullname"`
-	ManagerId  string `gorm:"column:manager_id"`
-	CreateDate string `gorm:"column:CreateDate"`
-	UpdateDate string `gorm:"column:UpdateDate"`
-	OrderNo    int    `gorm:"column:OrderNo"`
-	State      int    `gorm:"column:state"`
-}
+// type Company struct {
+// 	Id         int    `gorm:"column:id"`
+// 	Group      string `gorm:"column:group"`
+// 	Tyue       int    `gorm:"column:type"`
+// 	Name       string `gorm:"column:name"`
+// 	FullName   string `gorm:"column:fullname"`
+// 	ManagerId  string `gorm:"column:manager_id"`
+// 	CreateDate string `gorm:"column:CreateDate"`
+// 	UpdateDate string `gorm:"column:UpdateDate"`
+// 	OrderNo    int    `gorm:"column:OrderNo"`
+// 	State      int    `gorm:"column:state"`
+// }
 
 type Department struct {
 	Id         int    `gorm:"column:id"`

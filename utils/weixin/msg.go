@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"e.coding.net/itdesk/weixin/golib/utils"
@@ -21,9 +22,18 @@ type Keyword struct {
 	Color string `json:"color"`
 }
 
+type templateRsp struct {
+	Errcode string `json:"errcode"`
+	Errmsg  string `json:"errmsg"`
+	Msgid   uint32 `json:"msgid"`
+}
+
 func TemplateMessage(touser, template_id, url string, msgData interface{}) error {
 	s := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", utils.GetAccessToken())
-	data := templateMsg{
+	if len(url) > 0 {
+		url = WeixinAuthUrl(url)
+	}
+	req := templateMsg{
 		Touser:     touser,
 		TemplateId: template_id,
 		Url:        url,
@@ -32,7 +42,12 @@ func TemplateMessage(touser, template_id, url string, msgData interface{}) error
 	buffer := &bytes.Buffer{}
 	encoder := json.NewEncoder(buffer)
 	encoder.SetEscapeHTML(false)
-	_ = encoder.Encode(data)
-	_, err := http.Post(s, "application/json; charset=utf-8", buffer)
+	_ = encoder.Encode(req)
+	data, err := http.Post(s, "application/json; charset=utf-8", buffer)
+
+	var rsp templateRsp
+	body, _ := ioutil.ReadAll(data.Body)
+	_ = json.Unmarshal(body, &rsp)
+
 	return err
 }

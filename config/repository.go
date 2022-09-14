@@ -16,3 +16,10 @@ type RedisConfig struct {
 	Addr     string
 	Password string
 }
+
+type WeixinConfig struct {
+	WXAppId          string
+	WXAppSecret      string
+	WXEncodingAESKey string
+	WXToken          string
+}

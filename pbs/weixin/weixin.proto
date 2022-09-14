@@ -86,6 +86,20 @@ enum RepairLogMode {
 	LOG_MODE_user = 1;		// 用户指定
 	LOG_MODE_out = 2;		// 工程师转交
 }
+enum TaskPassReason {
+	TASK_PASS_REASON_none = 0;				// 未知
+	TASK_PASS_REASON_wrong_type = 1;	// 分类错误
+	TASK_PASS_REASON_busy = 2; 				// 没有时间
+	TASK_PASS_REASON_uplevel=3;				// 升级处理
+	TASK_PASS_REASON_other = 4; 			// 其它
+}
+enum TaskPendingReason {
+	TASK_PENDING_REASON_none = 0;	// 未知
+	TASK_PENDING_REASON_user = 1;	// 用户搁置
+	TASK_PENDING_REASON_stop = 2; // 暂停处理
+	TASK_PENDING_REASON_pther=3;	// 其它
+}
+
 message RepairLog {
 	uint32 id = 1;
 	uint32 task_id = 2;
@@ -97,8 +111,8 @@ message RepairLog {
 	string FinishDate = 8;
 	uint32 process_time = 9;
 	uint32 out = 10;
-	string out_reason = 11;
-	string pending_reason = 12;
+	TaskPassReason out_reason = 11;
+	TaskPendingReason pending_reason = 12;
 }
 
 // 查询详细信息
@@ -108,8 +122,9 @@ message RepairLogDetailReq {
 }
 
 // 工单转交
+
 message TaskPassReq {
 	uint32 task_id = 1;
 	uint32 engineer_id = 2;
-	string reason = 3;
+	TaskPassReason reason = 3;
 }

@@ -49,7 +49,7 @@ func GetAccessToken() string {
 	if accessExpiresIn < time.Now().Unix() {
 		lock.Lock()
 		defer lock.Unlock()
-		if accessExpiresIn >= time.Now().Unix() {
+		if accessExpiresIn < time.Now().Unix() {
 			initTickets()
 		}
 	}
@@ -60,7 +60,7 @@ func GetJsApiTIcket() string {
 	if jsapiExpiresIn < time.Now().Unix() {
 		lock.Lock()
 		defer lock.Unlock()
-		if jsapiExpiresIn >= time.Now().Unix() {
+		if jsapiExpiresIn < time.Now().Unix() {
 			initTickets()
 		}
 	}

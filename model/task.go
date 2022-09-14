@@ -1,17 +1,13 @@
 package model
 
-import (
-	"time"
-
-	"e.coding.net/itdesk/weixin/golib/utils"
-)
+import "e.coding.net/itdesk/weixin/golib/utils"
 
 type Task struct {
-	Id         int     `gorm:"column:id"`
-	TypeId     int     `gorm:"column:type_id"`
-	UserId     int     `gorm:"column:user_id"`
+	Id         uint32  `gorm:"column:id"`
+	TypeId     uint32  `gorm:"column:type_id"`
+	UserId     uint32  `gorm:"column:user_id"`
 	Text       *string `gorm:"column:text"`
-	Urgent     int     `gorm:"column:urgent"`
+	Urgent     bool    `gorm:"column:urgent"`
 	QrCode     *string `gorm:"column:qr_code"`
 	Pic1       *string `gorm:"column:pic1"`
 	Pic2       *string `gorm:"column:pic2"`
@@ -20,40 +16,34 @@ type Task struct {
 	Pic5       *string `gorm:"column:pic5"`
 	Voice      *string `gorm:"column:voice"`
 	CreateDate *string `gorm:"column:CreateDate"`
-	CreateMode int     `gorm:"column:create_mode"`
+	CreateMode uint32  `gorm:"column:create_mode"`
 }
 
-func PassTask(taskId uint32, engineerId uint32, reason string) error {
-	timeNow := time.Now().Format("2006-01-02 15:04:05")
-	ins := utils.MysqlIns().Begin()
-	var log TaskLog
-	if err := ins.Table("tf_task_log").Where("task_id=?", taskId).Order("out DESC").Find(&log).Error; err != nil {
-		ins.Rollback()
-		return err
+func GetTaskDetail(id uint32) (*Task, error) {
+	var res Task
+	if err := utils.MysqlIns().Table("tf_task").Where("id=?", id).First(&res).Error; err != nil {
+		return nil, err
+	} else {
+		return &res, nil
 	}
-	// 关闭旧流程
-	if err := ins.Table("tf_task_log").Where("id=?", log.Id).Update(map[string]interface{}{
-		"FinishDate":   timeNow,
-		"state":        3, //转出
-		"out_reason":   reason,
-		"process_time": utils.TimeSub(timeNow, *log.CreateDate),
-	}).Error; err != nil {
-		ins.Rollback()
-		return err
+}
+
+func (a *Task) CollectPic() []string {
+	var res []string
+	if a.Pic1 != nil {
+		res = append(res, *a.Pic1)
 	}
-	// 创建新流程
-	if err := CreateTaskLog(&TaskLog{
-		Id:          0,
-		TaskId:      taskId,
-		EngineerId:  engineerId,
-		State:       0,
-		Mode:        2, //转交
-		CreateDate:  &timeNow,
-		Out:         log.Out + 1,
-		ProcessTime: 0,
-	}); err != nil {
-		ins.Rollback()
-		return err
+	if a.Pic2 != nil {
+		res = append(res, *a.Pic2)
 	}
-	return nil
+	if a.Pic3 != nil {
+		res = append(res, *a.Pic3)
+	}
+	if a.Pic4 != nil {
+		res = append(res, *a.Pic4)
+	}
+	if a.Pic5 != nil {
+		res = append(res, *a.Pic5)
+	}
+	return res
 }

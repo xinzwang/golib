@@ -8,6 +8,9 @@ option go_package = "./weixin";
 // 服务列表
 service WeixinService {
 	rpc TicketRpc(TicketReq) returns(TicketRsp) {};
+	rpc RepairTypeDetailRpc(RepairTypeDetailReq) returns(RepairType) {};
+	rpc RepairLogDetailRpc(RepairLogDetailReq) returns (RepairLog) {};
+	rpc RepairTaskDetailRpc(RepairTaskDetailReq) returns(RepairTask) {};
 }
 
 // 获取接口票据	access_token jsapi_ticket
@@ -24,10 +27,89 @@ message TicketRsp {
 	int64 expires_in = 2;
 }
 
+
+
+// 工单
+enum RepairTaskMode {
+	TASK_MODE_none = 0;			// 未知
+	TASK_MODE_user = 1;			//用户微信添加
+	TASK_MODE_engineer = 2;	// 工程师手动添加
+}
+
+message RepairTask {
+	uint32 id = 1;
+	RepairTypeInfo type = 2;
+	uint32 user_id = 3;
+	string text = 4;
+	bool urgent = 5;
+	string qr_code = 6;
+	repeated string pic = 7;
+	string CreateDate  = 8;
+	RepairTaskMode mode = 9;
+}
+
+message RepairTaskDetailReq{
+	uint32 id = 1;
+}
+
+// 工单分类
+message RepairTypeInfo {
+	uint32 id = 1;
+	string name = 2;
+}
+
+message RepairType {
+	uint32 id = 1;
+	string name = 2;
+	uint32 father_id = 3;
+	string CreateDate = 4;
+	string UpdateDate = 5;
+	uint32 user_id = 6;
+}
+
+// 查询详细信息
+message RepairTypeDetailReq {
+	uint32 id = 1;
+}
+
+
+// 工单日志
+enum RepairLogState {
+	LOG_STATE_wait = 0;			// 待响应
+	LOG_STATE_process = 1;	// 处理中
+	LOG_STATE_pending = 2; 	// 挂起
+	LOG_STATE_out = 3;			// 转出
+	LOG_STATE_close = 4;		// 关闭
+}
+enum RepairLogMode {
+	LOG_MODE_system = 0;	// 系统派单
+	LOG_MODE_user = 1;		// 用户指定
+	LOG_MODE_out = 2;		// 工程师转交
+}
+message RepairLog {
+	uint32 id = 1;
+	uint32 task_id = 2;
+	uint32 engineer_id = 3;
+	RepairLogState state = 4;
+	RepairLogMode mode = 5;
+	string CreateDate =6;
+	string StartDate = 7;
+	string FinishDate = 8;
+	uint32 process_time = 9;
+	uint32 out = 10;
+	string out_reason = 11;
+	string pending_reason = 12;
+}
+
+// 查询详细信息
+message RepairLogDetailReq {
+	uint32 id = 1;			// 根据log_id查询
+	uint32 task_id = 2; // 根据task_id查询
+}
+
 // 工单转交
 message TaskPassReq {
 	uint32 task_id = 1;
 	uint32 engineer_id = 2;
 	string reason = 3;
 }
-

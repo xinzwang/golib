@@ -8,3 +8,13 @@ func TimeSub(t1, t2 string) int {
 	ts, _ := time.Parse("2006-01-02 15:04:05", t2)
 	return int(tf.Sub(ts).Seconds())
 }
+
+// 限制文本长度 超出截断
+func LimitTextLength(text string, maxLength uint32) string {
+	z := []rune(text)
+	msg := string(z[0:maxLength])
+	if len(z) > int(maxLength) {
+		msg += " ...."
+	}
+	return msg
+}

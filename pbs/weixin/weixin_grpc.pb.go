@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WeixinServiceClient interface {
 	TicketRpc(ctx context.Context, in *TicketReq, opts ...grpc.CallOption) (*TicketRsp, error)
+	RepairTypeDetailRpc(ctx context.Context, in *RepairTypeDetailReq, opts ...grpc.CallOption) (*RepairType, error)
+	RepairLogDetailRpc(ctx context.Context, in *RepairLogDetailReq, opts ...grpc.CallOption) (*RepairLog, error)
+	RepairTaskDetailRpc(ctx context.Context, in *RepairTaskDetailReq, opts ...grpc.CallOption) (*RepairTask, error)
 }
 
 type weixinServiceClient struct {
@@ -42,11 +45,41 @@ func (c *weixinServiceClient) TicketRpc(ctx context.Context, in *TicketReq, opts
 	return out, nil
 }
 
+func (c *weixinServiceClient) RepairTypeDetailRpc(ctx context.Context, in *RepairTypeDetailReq, opts ...grpc.CallOption) (*RepairType, error) {
+	out := new(RepairType)
+	err := c.cc.Invoke(ctx, "/weixin.WeixinService/RepairTypeDetailRpc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *weixinServiceClient) RepairLogDetailRpc(ctx context.Context, in *RepairLogDetailReq, opts ...grpc.CallOption) (*RepairLog, error) {
+	out := new(RepairLog)
+	err := c.cc.Invoke(ctx, "/weixin.WeixinService/RepairLogDetailRpc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *weixinServiceClient) RepairTaskDetailRpc(ctx context.Context, in *RepairTaskDetailReq, opts ...grpc.CallOption) (*RepairTask, error) {
+	out := new(RepairTask)
+	err := c.cc.Invoke(ctx, "/weixin.WeixinService/RepairTaskDetailRpc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WeixinServiceServer is the server API for WeixinService service.
 // All implementations must embed UnimplementedWeixinServiceServer
 // for forward compatibility
 type WeixinServiceServer interface {
 	TicketRpc(context.Context, *TicketReq) (*TicketRsp, error)
+	RepairTypeDetailRpc(context.Context, *RepairTypeDetailReq) (*RepairType, error)
+	RepairLogDetailRpc(context.Context, *RepairLogDetailReq) (*RepairLog, error)
+	RepairTaskDetailRpc(context.Context, *RepairTaskDetailReq) (*RepairTask, error)
 	mustEmbedUnimplementedWeixinServiceServer()
 }
 
@@ -56,6 +89,15 @@ type UnimplementedWeixinServiceServer struct {
 
 func (UnimplementedWeixinServiceServer) TicketRpc(context.Context, *TicketReq) (*TicketRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TicketRpc not implemented")
+}
+func (UnimplementedWeixinServiceServer) RepairTypeDetailRpc(context.Context, *RepairTypeDetailReq) (*RepairType, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RepairTypeDetailRpc not implemented")
+}
+func (UnimplementedWeixinServiceServer) RepairLogDetailRpc(context.Context, *RepairLogDetailReq) (*RepairLog, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RepairLogDetailRpc not implemented")
+}
+func (UnimplementedWeixinServiceServer) RepairTaskDetailRpc(context.Context, *RepairTaskDetailReq) (*RepairTask, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RepairTaskDetailRpc not implemented")
 }
 func (UnimplementedWeixinServiceServer) mustEmbedUnimplementedWeixinServiceServer() {}
 
@@ -88,6 +130,60 @@ func _WeixinService_TicketRpc_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WeixinService_RepairTypeDetailRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RepairTypeDetailReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WeixinServiceServer).RepairTypeDetailRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/weixin.WeixinService/RepairTypeDetailRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WeixinServiceServer).RepairTypeDetailRpc(ctx, req.(*RepairTypeDetailReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WeixinService_RepairLogDetailRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RepairLogDetailReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WeixinServiceServer).RepairLogDetailRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/weixin.WeixinService/RepairLogDetailRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WeixinServiceServer).RepairLogDetailRpc(ctx, req.(*RepairLogDetailReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WeixinService_RepairTaskDetailRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RepairTaskDetailReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WeixinServiceServer).RepairTaskDetailRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/weixin.WeixinService/RepairTaskDetailRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WeixinServiceServer).RepairTaskDetailRpc(ctx, req.(*RepairTaskDetailReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WeixinService_ServiceDesc is the grpc.ServiceDesc for WeixinService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +194,18 @@ var WeixinService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TicketRpc",
 			Handler:    _WeixinService_TicketRpc_Handler,
+		},
+		{
+			MethodName: "RepairTypeDetailRpc",
+			Handler:    _WeixinService_RepairTypeDetailRpc_Handler,
+		},
+		{
+			MethodName: "RepairLogDetailRpc",
+			Handler:    _WeixinService_RepairLogDetailRpc_Handler,
+		},
+		{
+			MethodName: "RepairTaskDetailRpc",
+			Handler:    _WeixinService_RepairTaskDetailRpc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

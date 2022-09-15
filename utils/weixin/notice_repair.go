@@ -11,12 +11,13 @@ type NoticeTaskProgessData struct {
 }
 
 func NoticeTaskProgess(openid string, data *NoticeTaskProgessData, url string) error {
-	return TemplateMessage(
+	go TemplateMessage(
 		openid,
 		"n0P5QhfvrZUEoZbeK5Vnr09e2wX_fwzYOOwKBICUnDM",
 		url,
 		data,
 	)
+	return nil
 }
 
 // 工单申请待处理通知

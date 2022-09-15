@@ -20,3 +20,12 @@ func GetPosDetail(id uint32) (*Pos, error) {
 	}
 	return &res, nil
 }
+
+func GetPosList() ([]*Pos, error) {
+	var res []*Pos
+	err := utils.MysqlIns().Table("ti_position").Find(&res).Error
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}

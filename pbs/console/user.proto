@@ -16,9 +16,10 @@ service UserService {
 
 // 用户基本信息
 enum UserState {
-	USER_ENABLE = 0;		// 正常
-	USER_AUDITING = 1;	// 审核中
+	USER_Enable = 0;		// 正常
+	USER_Auditing = 1;	// 审核中
 	USER_Disable = 2; 	// 停用
+	USER_Unauth = 3; 		// 未关联微信账号
 };
 
 message CompanyInfo {
@@ -50,7 +51,7 @@ message User{
 	CompanyInfo company = 11; // 公司
 	PosInfo pos = 12;	// 职位
 	DepInfo dep = 13; // 部门
-	string menu_id = 14;
+	uint32 menu_id = 14;
 	string CreateDate = 15;
 	string UpdateDate = 16;
 	string ip = 17;
@@ -75,6 +76,13 @@ message UserListRsp {
 	repeated User items = 1;
 	uint32 total = 2;
 };
+
+// 更改用户状态 
+message UserOperateReq {
+	uint32 id = 1;
+	string op = 2;
+}
+
 
 // 用户部门信息
 enum DepState {

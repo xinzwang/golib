@@ -20,7 +20,7 @@ type User struct {
 	Engineer     uint32 `gorm:"column:engineer" json:"engineer"`
 	PositionId   uint32 `gorm:"column:position_id" json:"position_id"`
 	DepartmentId uint32 `gorm:"column:department_id" json:"department_id"`
-	MenuId       string `gorm:"column:menu_id" json:"menu_id"`
+	MenuId       uint32 `gorm:"column:menu_id" json:"menu_id"`
 	CreateDate   string `gorm:"column:CreateDate" json:"CreateDate"`
 	UpdateDate   string `gorm:"column:UpdateDate" json:"UpdateDate"`
 	Ip           string `gorm:"column:ip" json:"ip"`
@@ -54,7 +54,7 @@ func GetCount(username string, maps map[string]interface{}) (uint32, error) {
 func GetUserList(page uint32, limit uint32, sort string, username string, maps map[string]interface{}) ([]*User, error) {
 	var users []*User
 	ins := listIns(username, maps)
-
+	// sort
 	if len(sort) > 0 {
 		sortFlag := "ASC"
 		if sort[0] == '-' {
@@ -63,8 +63,11 @@ func GetUserList(page uint32, limit uint32, sort string, username string, maps m
 		sortKey := sort[1:]
 		ins = ins.Order(fmt.Sprintf("%s %s", sortKey, sortFlag))
 	}
-
-	err := ins.Offset(page).Limit(limit).Find(&users).Error
+	// page
+	if page > 0 && limit > 0 {
+		ins = ins.Offset((page - 1) * limit).Limit(limit)
+	}
+	err := ins.Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +75,12 @@ func GetUserList(page uint32, limit uint32, sort string, username string, maps m
 }
 
 // 新增用户
-func AddUser(user *User) error {
-	return nil
+func CreateUser(user *User) error {
+	if err := utils.MysqlIns().Table("ti_user").Create(user).Error; err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
 
 // 删除用户
@@ -82,13 +89,17 @@ func DeleteUser(id int) error {
 }
 
 // 更新用户信息
-func UpdateUser(data map[string]interface{}) error {
-	return nil
+func UpdateUser(id uint32, data map[string]interface{}) error {
+	if err := utils.MysqlIns().Table("ti_user").Where("id=?", id).Updates(data).Error; err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
 
 func listIns(username string, maps map[string]interface{}) *gorm.DB {
 	ins := utils.MysqlIns().Table("ti_user")
-	if len(username) != 0 {
+	if len(username) > 0 {
 		ins = ins.Where("username LIKE ?", "%"+username+"%")
 	}
 	if maps != nil {

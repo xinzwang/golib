@@ -31,14 +31,27 @@ func NewMysqlByConfig() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	// db.Set("gorm:table_options","CHARSET=utf8")
 	sqlDB := db.DB()
-	// if err != nil {
-	// 	return nil, err
-	// }
 	sqlDB.SetMaxOpenConns(mysqlConfig.MaxOpenConn) //设置连接池 0为不限制
 	sqlDB.SetMaxIdleConns(mysqlConfig.MaxIdleConn) //设置最大链接数
 	sqlDB.SetConnMaxLifetime(time.Minute * 3)
+
+	// db.Callback().Create().Replace("gorm:update_time_stamp", func(scope *gorm.Scope) {
+	// 	if !scope.HasError() {
+	// 		timeNow := time.Now().Unix()
+	// 		if field, ok := scope.FieldByName("CreateDate"); ok {
+	// 			if field.IsBlank {
+	// 				field.Set(timeNow)
+	// 			}
+	// 		}
+	// 		if field, ok := scope.FieldByName("UpdateDate"); ok {
+	// 			if field.IsBlank {
+	// 				field.Set(timeNow)
+	// 			}
+	// 		}
+	// 	}
+	// })
+
 	return db, nil
 }
 

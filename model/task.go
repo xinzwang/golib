@@ -1,6 +1,11 @@
 package model
 
-import "e.coding.net/itdesk/weixin/golib/utils"
+import (
+	"fmt"
+
+	"e.coding.net/itdesk/weixin/golib/utils"
+	"github.com/jinzhu/gorm"
+)
 
 type Task struct {
 	Id         uint32  `gorm:"column:id"`
@@ -16,7 +21,41 @@ type Task struct {
 	Pic5       *string `gorm:"column:pic5"`
 	Voice      *string `gorm:"column:voice"`
 	CreateDate *string `gorm:"column:CreateDate"`
-	CreateMode uint32  `gorm:"column:create_mode"`
+	Mode       uint32  `gorm:"column:create_mode"`
+}
+
+func GetTaskCount(keyword string, maps map[string]interface{}) (uint32, error) {
+	var total uint32
+	ins := taskListIns(keyword, maps)
+	if err := ins.Count(&total).Error; err != nil {
+		return 0, err
+	} else {
+		return total, nil
+	}
+}
+
+// 获取任务列表
+func GetTaskList(page uint32, limit uint32, sort string, keyword string, maps map[string]interface{}) ([]*Task, error) {
+	var tasks []*Task
+	ins := taskListIns(keyword, maps)
+	// sort
+	if len(sort) > 0 {
+		sortFlag := "ASC"
+		if sort[0] == '-' {
+			sortFlag = "DESC"
+		}
+		sortKey := sort[1:]
+		ins = ins.Order(fmt.Sprintf("%s %s", sortKey, sortFlag))
+	}
+	// page
+	if page > 0 && limit > 0 {
+		ins = ins.Offset((page - 1) * limit).Limit(limit)
+	}
+	err := ins.Find(&tasks).Error
+	if err != nil {
+		return nil, err
+	}
+	return tasks, err
 }
 
 func GetTaskDetail(id uint32) (*Task, error) {
@@ -46,4 +85,15 @@ func (a *Task) CollectPic() []string {
 		res = append(res, *a.Pic5)
 	}
 	return res
+}
+
+func taskListIns(keyword string, maps map[string]interface{}) *gorm.DB {
+	ins := utils.MysqlIns().Table("tf_task")
+	if len(keyword) > 0 {
+		ins = ins.Where("text LIKE ?", "%"+keyword+"%")
+	}
+	if maps != nil {
+		ins = ins.Where(maps)
+	}
+	return ins
 }

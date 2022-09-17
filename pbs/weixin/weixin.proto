@@ -1,9 +1,10 @@
-// protoc --go_out=../ weixin.proto
-// protoc --go-grpc_out=../   weixin.proto
+// protoc --go_out=paths=source_relative:./weixin ./weixin/weixin.proto
 
 syntax = "proto3";
 package weixin;
-option go_package = "./weixin";
+option go_package = "e.coding.net/itdesk/weixin/golib/pbs/weixin";
+
+import "console/user.proto";
 
 // 服务列表
 service WeixinService {
@@ -27,8 +28,6 @@ message TicketRsp {
 	int64 expires_in = 2;
 }
 
-
-
 // 工单
 enum RepairTaskMode {
 	TASK_MODE_none = 0;			// 未知
@@ -37,19 +36,46 @@ enum RepairTaskMode {
 }
 
 message RepairTask {
-	uint32 id = 1;
-	RepairTypeInfo type = 2;
-	uint32 user_id = 3;
-	string text = 4;
-	bool urgent = 5;
-	string qr_code = 6;
-	repeated string pic = 7;
-	string CreateDate  = 8;
-	RepairTaskMode mode = 9;
+	uint32 id = 1;						// id
+	uint32 user_id = 3;				// 用户id
+	RepairTypeInfo type = 2;	// 工单分类
+	string text = 4;					// 工单内容
+	bool urgent = 5;					// 是否紧急
+	string qr_code = 6;				// 二维码
+	repeated string pic = 7;	// 照片
+	string CreateDate  = 8;		// 创建日期
+	RepairTaskMode mode = 9;	// 创建方式
 }
 
 message RepairTaskDetailReq{
 	uint32 id = 1;
+}
+
+// 工单列表
+message RepairTaskListItem {
+	uint32 id = 1;						// id
+	console.UserInfo user = 3;				// 用户
+	RepairTypeInfo type = 2;	// 工单分类
+	string text = 4;					// 工单内容
+	bool urgent = 5;					// 是否紧急
+	string CreateDate  = 8;		// 创建日期
+	RepairTaskMode mode = 9;	// 创建方式
+	RepairLogState state = 10;// 工单状态
+	console.UserInfo engineer = 11;		// 工程师
+}
+
+message RepairTaskListReq {
+	uint32 page = 1;
+	uint32 limit = 2;
+	string sort = 3;
+	string content = 4;
+	uint32 state = 5;
+	uint32 type_id = 6;
+}
+
+message RepairTaskListRsp {
+	repeated RepairTaskListItem items = 1;
+	uint32 total = 2;
 }
 
 // 工单分类
@@ -115,14 +141,14 @@ message RepairLog {
 	TaskPendingReason pending_reason = 12;
 }
 
-// 查询详细信息
+
+// 查询日志详细信息
 message RepairLogDetailReq {
 	uint32 id = 1;			// 根据log_id查询
 	uint32 task_id = 2; // 根据task_id查询
 }
 
 // 工单转交
-
 message TaskPassReq {
 	uint32 task_id = 1;
 	uint32 engineer_id = 2;

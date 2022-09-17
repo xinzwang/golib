@@ -3,7 +3,7 @@
 
 syntax = "proto3";
 package console;
-option go_package = "./console";
+option go_package = "e.coding.net/itdesk/weixin/golib/pbs/console";
 
 // 服务列表
 service UserService {
@@ -35,6 +35,10 @@ message DepInfo {
 message PosInfo {
 	uint32 id = 1;
 	string name = 2;
+}
+message UserInfo {
+	uint32 id = 1;
+	string username = 2;
 }
 
 message User{

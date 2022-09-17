@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"sync"
+	"time"
 
 	"e.coding.net/itdesk/weixin/golib/config"
 
@@ -37,4 +39,18 @@ func RedisIns() *redis.Client {
 		}
 	}
 	return redisIns
+}
+
+func GetObject(key string, obj interface{}) error {
+	if value, err := RedisIns().Get(key).Bytes(); err != nil {
+		return err
+	} else {
+		_ = json.Unmarshal(value, &obj)
+		return nil
+	}
+}
+
+func SetObject(key string, obj interface{}, expiration time.Duration) error {
+	buffer, _ := json.Marshal(obj)
+	return RedisIns().Set(key, buffer, expiration).Err()
 }

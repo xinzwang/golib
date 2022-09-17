@@ -1,8 +1,6 @@
 package model
 
 import (
-	"fmt"
-
 	"e.coding.net/itdesk/weixin/golib/utils"
 )
 
@@ -61,7 +59,6 @@ func GetTaskLogByTaskId(taskId uint32) (*TaskLog, error) {
 	if err := utils.MysqlIns().Table("tf_task_log").Where("task_id=?", taskId).Order("`out` DESC").Limit(1).Find(&res).Error; err != nil {
 		return nil, err
 	} else {
-		fmt.Println(res)
 		return &res, nil
 	}
 }
